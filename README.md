@@ -10,4 +10,5 @@ Includes:
 
 How to use:
 Put it in the "Starter Character Scripts" folder.
+
 Place your own animations.
