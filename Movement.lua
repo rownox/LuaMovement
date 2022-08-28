@@ -17,10 +17,12 @@ local StaminaOut = RS:WaitForChild("StaminaOut")
 local Slided = RS:WaitForChild("Slide")
 local Dashed = RS:WaitForChild("Dash")
 
+-- MODIFY SPEED
 local run = 23 
 local walk = 14
 local DebounceTime = 0.2
 
+-- ANIMATIONS
 local ForwardDashAnime = Hum:LoadAnimation(AnimationFolder:WaitForChild("ForwardDash"))
 local BackDashAnime =  Hum:LoadAnimation(AnimationFolder:WaitForChild("BackDash"))
 local LeftDashAnime = Hum:LoadAnimation(AnimationFolder:WaitForChild("LeftDash"))
@@ -48,7 +50,6 @@ UIS.InputBegan:Connect(function(key, txt)
 				if (statModule.getStamina(player.UserId) <= 0) then return end
 				RunFront:Play()
 				player.Character.Humanoid.WalkSpeed = run
-				Run:FireServer("Started")
 			end
 		end
 	elseif (key.KeyCode == Enum.KeyCode.W) then
@@ -59,7 +60,6 @@ UIS.InputBegan:Connect(function(key, txt)
 				if (statModule.getStamina(player.UserId) <= 0) then return end
 				RunFront:Play()
 				player.Character.Humanoid.WalkSpeed = run
-				Run:FireServer("Started")
 			end
 		end
 	elseif (key.KeyCode == Enum.KeyCode.A) then
@@ -67,7 +67,6 @@ UIS.InputBegan:Connect(function(key, txt)
 			player.Character.Humanoid.WalkSpeed = walk
 			RunFront:Stop()
 			WalkLeft:Play()
-			Run:FireServer("Stopped")
 		elseif (UIS:IsKeyDown(Enum.KeyCode.D)) then
 			WalkRight:Stop()
 		else
@@ -77,14 +76,12 @@ UIS.InputBegan:Connect(function(key, txt)
 		if (UIS:IsKeyDown(Enum.KeyCode.W) and UIS:IsKeyDown(Enum.KeyCode.LeftShift)) then
 			player.Character.Humanoid.WalkSpeed = walk
 			RunFront:Stop()
-			Run:FireServer("Stopped")
 		end
 	elseif (key.KeyCode == Enum.KeyCode.D) then
 		if (UIS:IsKeyDown(Enum.KeyCode.W) and UIS:IsKeyDown(Enum.KeyCode.LeftShift) and not UIS:IsKeyDown(Enum.KeyCode.A)) then
 			player.Character.Humanoid.WalkSpeed = walk
 			RunFront:Stop()
 			WalkRight:Play()
-			Run:FireServer("Stopped")
 		elseif (UIS:IsKeyDown(Enum.KeyCode.A)) then
 			WalkLeft:Stop()
 		else
@@ -101,13 +98,11 @@ UIS.InputEnded:Connect(function(key, txt)
 		if (UIS:IsKeyDown(Enum.KeyCode.W)) then
 			player.Character.Humanoid.WalkSpeed = walk
 			RunFront:Stop()
-			Run:FireServer("Stopped")
 		end
 	elseif (key.KeyCode == Enum.KeyCode.W) then
 		if (UIS:IsKeyDown(Enum.KeyCode.LeftShift)) then
 			player.Character.Humanoid.WalkSpeed = walk
 			RunFront:Stop()
-			Run:FireServer("Stopped")
 		end
 	elseif (key.KeyCode == Enum.KeyCode.A) then
 		if (UIS:IsKeyDown(Enum.KeyCode.D)) then
@@ -116,7 +111,6 @@ UIS.InputEnded:Connect(function(key, txt)
 			if (statModule.getStamina(player.UserId) <= 0) then player.Character.Humanoid.WalkSpeed = walk else
 				RunFront:Play()
 				player.Character.Humanoid.WalkSpeed = run
-				Run:FireServer("Started")
 			end
 			WalkLeft:Stop()
 		else
@@ -127,7 +121,6 @@ UIS.InputEnded:Connect(function(key, txt)
 			if (statModule.getStamina(player.UserId) <= 0) then return end
 			RunFront:Play()
 			player.Character.Humanoid.WalkSpeed = run
-			Run:FireServer("Started")
 		end
 	elseif (key.KeyCode == Enum.KeyCode.D) then
 		if (UIS:IsKeyDown(Enum.KeyCode.A)) then
@@ -136,7 +129,6 @@ UIS.InputEnded:Connect(function(key, txt)
 			if (statModule.getStamina(player.UserId) <= 0) then player.Character.Humanoid.WalkSpeed = walk else
 				RunFront:Play()
 				player.Character.Humanoid.WalkSpeed = run
-				Run:FireServer("Started")
 			end
 			WalkRight:Stop()
 		else
@@ -151,8 +143,6 @@ function dash(Vector, Animation, Modifier)
 	local Tween = TweenService:Create(HRP,TweenInfo.new(DebounceTime,Enum.EasingStyle.Linear,Enum.EasingDirection.Out),{Velocity = Vector * Modifier})
 	Tween:Play()
 	Animation:Play()
-	Event:FireServer("Dash")
-	Dashed:FireServer()
 	delay(DebounceTime + 0.1,function()
 		Animation:Stop()
 		statModule.setIsDashing(player.UserId, false)
@@ -203,8 +193,6 @@ function slide(key)
 		end)
 
 		slideAnim:Play()
-		Event:FireServer("Slide")
-		Slided:FireServer()
 
 		local slide = Instance.new("BodyVelocity")
 		slide.MaxForce = Vector3.new(1,0,1)*10000
@@ -219,11 +207,3 @@ function slide(key)
 		slide:Destroy()
 	end
 end
-
-StaminaOut.OnClientEvent:Connect(function()
-	if UIS:IsKeyDown(Enum.KeyCode.W) and UIS:IsKeyDown(Enum.KeyCode.LeftShift) then
-		player.Character.Humanoid.WalkSpeed = walk
-		RunFront:Stop()
-		Run:FireServer("Stopped")
-	end
-end)
