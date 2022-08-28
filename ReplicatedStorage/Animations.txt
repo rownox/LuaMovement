@@ -1,1 +1,1 @@
-This is where your animations will be.
+This is where your list of animations will be.
